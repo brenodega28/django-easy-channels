@@ -15,29 +15,29 @@ pip install django-easy-channels
 ### Backend
 
 ```python
-from django_easy_channels import JSONWebSocket
+from easy_channels import JSONWebSocket
 
 
 class ChatConsumer(JSONWebSocket):
-    # function called when socket connects
+    # Socket connects
     def on_connect(self):
-        # getting name from url
+        # gets name from url
         self.name = self.scope['url_route']['kwargs']['name']
 
-        # adds this socket to group chatroom
+        # Adds socket and consumer to group chatroom
         self.group_add('chatroom')
 
-        # accepting connection
+        # Accepts socket connection
         self.accept()
 
-    # function that will be called if this consumer receives a message with the event broadcast_message
+    # Called when consumer receives a message with the event broadcast_message
     def on_broadcast_message(self, event):
         payload = {
             'message': event['message'],
             'from': self.name
         }
 
-        # sends this message to all connected sockets in the 'chatroom' group (not consumers)
+        # Sends this message to all connected sockets in the 'chatroom' group (not consumers)
         await self.group_send(
             'chatroom', # group
             'message', # event name
@@ -51,7 +51,7 @@ class ChatConsumer(JSONWebSocket):
 const messages = [];
 const socket = new WebSocket("wss://YOUR_URL/chat/joselito");
 
-// will be called when the socket receives a message
+// Called when socket receives a message
 socket.onmessage = function (message) {
   switch (message.event) {
     case "message":
@@ -64,7 +64,7 @@ socket.onmessage = function (message) {
 
 socket.send(
   JSON.stringify({
-    event: "broadcast_message", // Will call the on_broadcast function in the server
+    event: "broadcast_message", // Calls "on_broadcast()" function in consumer
     message: "Hello World!", // Can be acessed in bachend using event['message']
   })
 );
@@ -109,7 +109,7 @@ class ConsumerB(JSONWebSocket):
         self.group_add('groupB')
 
     def on_some_event(self):
-        # will call on_notify in all consumers in groupA
+        # Calls 'on_notify()' in all consumers added to groupA
         self.group_call_event(
             'groupA',
             'notify'
@@ -123,13 +123,13 @@ You can create custom middlewares that will be run before the on_connect functio
 The code below will automatically gather the chat user name from url.
 
 ```python
-from django_easy_channels import SocketMiddleware
+from easy_channels import SocketMiddleware
 
 class UserGatherMiddleware(SocketMiddleware):
 
-    # will be called before the consumer on_connect
+    # Called before the consumer's 'on_connect()'
     def on_connect(self):
-        # the middleware has complete access to the consumer in the self.consumer attribute
+        # This middleware has complete access to the consumer in the self.consumer attribute
         self.consumer.name = self.scope['url_route']['kwargs']['name']
 ```
 
