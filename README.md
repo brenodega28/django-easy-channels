@@ -4,7 +4,9 @@ Simple framework for making socket consumers using Django Channels.
 
 It's made to work a little like SocketIO using events.
 
-## Socket Example (Backend)
+## Socket Example
+
+### Backend
 
 ```python
 from django_easy_channels import JSONWebSocket
@@ -35,6 +37,19 @@ class ChatConsumer(JSONWebSocket):
             'message', # event name
             payload # data
         )
+```
+
+### Frontend
+
+```js
+const socket = new WebSocket("YOUR_URL/chat/joselito");
+
+socket.send(
+  JSON.stringify({
+    event: "broadcast_message", // Will call the on_broadcast on the server
+    message: "Hello World!", // Will be found in event['message']
+  })
+);
 ```
 
 ## Adding to Route

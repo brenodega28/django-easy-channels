@@ -11,15 +11,11 @@ setup(
     author='Breno Gomes',                   # Type in your name
     author_email='brenodega28@gmail.com',      # Type in your E-Mail
     # Provide either the link to your github or to your website
-    url='https://github.com/user/reponame',
+    url='https://github.com/brenodega28/django_easy_channels',
     # I explain this later on
     download_url='https://github.com/user/reponame/archive/v_01.tar.gz',
     # Keywords that define your package best
-    keywords=['SOME', 'MEANINGFULL', 'KEYWORDS'],
-    install_requires=[            # I get to this in a second
-        'validators',
-        'beautifulsoup4',
-    ],
+    keywords=['Django', 'Django-Channels', 'Socket', 'Python'],
     classifiers=[
         # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
         'Development Status :: 3 - Alpha',
