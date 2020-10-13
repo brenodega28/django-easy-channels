@@ -24,7 +24,7 @@ class ChatConsumer(JSONWebSocket):
         # accepting connection
         self.accept()
 
-    # function that will be called if this consumer receives a message with event message
+    # function that will be called if this consumer receives a message with the event broadcast_message
     def on_broadcast_message(self, event):
         payload = {
             'message': event['message'],
