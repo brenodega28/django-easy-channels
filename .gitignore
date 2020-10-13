@@ -1,5 +1,6 @@
 dist
 .DS_Store
-test.py
+test
 build
 *.egg-info
+.vscode

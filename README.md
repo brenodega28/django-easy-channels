@@ -4,6 +4,9 @@ Lightweight framework for quickly making socket consumers using Django and Djang
 
 ## Installing
 
+Make sure Django Channels is installed and configured.
+You can follow a tutorial for Django Channels <a href="https://channels.readthedocs.io/en/latest/tutorial/part_1.html">here</a>.
+
 ```bash
 pip install django-easy-channels
 ```
@@ -27,6 +30,10 @@ class ChatConsumer(JSONConsumer):
 
         # Accepts socket connection
         self.accept()
+
+    # Socket disconnects
+    def on_disconnect(self):
+        print(f"User {self.name} disconnected")
 
     # Called when consumer receives a message with the event broadcast_message
     def on_broadcast_message(self, event):
@@ -62,7 +69,7 @@ socket.onmessage = function (message) {
 
 socket.send(
   JSON.stringify({
-    event: "broadcast_message", // Calls "on_broadcast()" function in consumer
+    event: "broadcast_message", // Calls "on_broadcast_message()" function in consumer
     message: "Hello World!", // Can be acessed in bachend using event['message']
   })
 );
@@ -75,11 +82,22 @@ This JSONConsumer can be added to Django Channels route in the same way of the o
 ```python
 from django.urls import re_path
 
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+import chat.routing
+
+
 from .consumers import ChatConsumer
 
 websocket_urlpatterns = [
-    re_path(r'^ws/chat/(?P<name>\w+)/', consumers.ChatConsumer),
+    re_path(r'^/chat/(?P<name>\w+)/', consumers.ChatConsumer),
 ]
+
+application = ProtocolTypeRouter({
+    'websocket': AuthMiddlewareStack(
+        URLRouter(websocket_urlpatterns)
+    ),
+})
 
 ```
 
@@ -87,7 +105,7 @@ websocket_urlpatterns = [
 
 Sometimes you want your consumers to talk with each other without sending data to the front end.
 
-For example, we can make a consumer A notify a consumer B that it needs to update its frontend information without this confidental data passing through consumer A.
+For example, we can make a consumer B notify a consumer A that it needs to update its frontend information without this confidental data passing through consumer B.
 
 ```python
 class ConsumerA(JSONConsumer):
@@ -121,7 +139,7 @@ You can create custom middlewares that will be run before the on_connect functio
 The code below will automatically gather the chat user name from url.
 
 ```python
-from easy_channels import ConsumerMiddleware
+from easy_channels.middleware import ConsumerMiddleware
 
 class UserGatherMiddleware(ConsumerMiddleware):
 
@@ -129,6 +147,11 @@ class UserGatherMiddleware(ConsumerMiddleware):
     def on_connect(self):
         # This middleware has complete access to the consumer in the self.consumer attribute
         self.consumer.name = self.scope['url_route']['kwargs']['name']
+
+    # Called everytime a message is received whatever the event
+    def on_receive(self, event):
+        print(event['event']) # Prints event name
+
 ```
 
 To the middleware to work with the consumer we must pass it.

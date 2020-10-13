@@ -1,45 +1,22 @@
-import pathlib
-from setuptools import setup
+import setuptools
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
-HERE = pathlib.Path(__file__).parent
-
-README = (HERE/"README.md").read_text()
-
-setup(
-    # How you named your package folder (MyLib)
-    name='django-easy-channels',
-    packages=['easy_channels'],
-    include_package_data=True,
-    long_descp=README,
-    long_descp_content="text/markdown",
-    entrypoints={
-        "console_scripts": [
-            "easy_channels=easy_channels.__main__:main",
-        ]
-    },
-    version='1.0',      # Start with a small number and increase it with every change you make
-    # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-    license='MIT',
-    # Give a short description about your library
-    description='Simple framework for making socket consumers using Django Channels.',
-    author='Breno Gomes',                   # Type in your name
-    author_email='brenodega28@gmail.com',      # Type in your E-Mail
-    # Provide either the link to your github or to your website
-    url='https://github.com/brenodega28/django_easy_channels',
-    # Keywords that define your package best
-    keywords=['Django', 'Django-Channels', 'Socket', 'Python'],
+setuptools.setup(
+    name="django-easy-channels",  # Replace with your own username
+    version="0.0.1",
+    author="Breno Gomes",
+    author_email="brenodega28@gmail.com",
+    description="Lightweight framework for quickly making socket consumers using Django and DjangoChannels.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/brenodega28/django_easy_channels",
+    packages=setuptools.find_packages(),
     classifiers=[
-        # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
-        'Development Status :: 3 - Alpha',
-        # Define that your audience are developers
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: MIT License',   # Again, pick a license
-        # Specify which pyhton versions that you want to support
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
     ],
+    python_requires='>=3.6',
 )
