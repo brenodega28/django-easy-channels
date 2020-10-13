@@ -42,7 +42,19 @@ class ChatConsumer(JSONWebSocket):
 ### Frontend
 
 ```js
-const socket = new WebSocket("YOUR_URL/chat/joselito");
+const messages = [];
+const socket = new WebSocket("wss://YOUR_URL/chat/joselito");
+
+// will be called when the socket receives a message
+socket.onmessage = function (message) {
+  switch (message.event) {
+    case "message":
+      messages.push({
+        message: message.message,
+        from: message.from,
+      });
+  }
+};
 
 socket.send(
   JSON.stringify({
