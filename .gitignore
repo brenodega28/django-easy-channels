@@ -1,2 +1,5 @@
 dist
 .DS_Store
+test.py
+build
+*.egg-info

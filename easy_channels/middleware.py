@@ -1,4 +1,4 @@
-class SocketMiddleware(object):
+class ConsumerMiddleware(object):
     def __init__(self, consumer):
         self.consumer = consumer
 

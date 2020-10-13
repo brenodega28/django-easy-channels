@@ -1,10 +1,24 @@
-from distutils.core import setup
+import pathlib
+from setuptools import setup
+
+
+HERE = pathlib.Path(__file__).parent
+
+README = (HERE/"README.md").read_text()
+
 setup(
     # How you named your package folder (MyLib)
     name='django-easy-channels',
     packages=['easy_channels'],
     include_package_data=True,
-    version='0.2',      # Start with a small number and increase it with every change you make
+    long_descp=README,
+    long_descp_content="text/markdown",
+    entrypoints={
+        "console_scripts": [
+            "easy_channels=easy_channels.__main__:main",
+        ]
+    },
+    version='1.0',      # Start with a small number and increase it with every change you make
     # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     license='MIT',
     # Give a short description about your library
@@ -13,8 +27,6 @@ setup(
     author_email='brenodega28@gmail.com',      # Type in your E-Mail
     # Provide either the link to your github or to your website
     url='https://github.com/brenodega28/django_easy_channels',
-    # I explain this later on
-    download_url='https://github.com/user/reponame/archive/v_01.tar.gz',
     # Keywords that define your package best
     keywords=['Django', 'Django-Channels', 'Socket', 'Python'],
     classifiers=[

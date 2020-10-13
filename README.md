@@ -13,10 +13,10 @@ pip install django-easy-channels
 ### Backend
 
 ```python
-from easy_channels import JSONWebSocket
+from easy_channels import JSONConsumer
 
 
-class ChatConsumer(JSONWebSocket):
+class ChatConsumer(JSONConsumer):
     # Socket connects
     def on_connect(self):
         # gets name from url
@@ -70,7 +70,7 @@ socket.send(
 
 ## Adding to Route
 
-This JSONWebSocket can be added to Django Channels route in the same way of the original consumers.
+This JSONConsumer can be added to Django Channels route in the same way of the original consumers.
 
 ```python
 from django.urls import re_path
@@ -90,7 +90,7 @@ Sometimes you want your consumers to talk with each other without sending data t
 For example, we can make a consumer A notify a consumer B that it needs to update its frontend information without this confidental data passing through consumer A.
 
 ```python
-class ConsumerA(JSONWebSocket):
+class ConsumerA(JSONConsumer):
     def on_connect(self):
         self.group_add('groupA')
 
@@ -102,7 +102,7 @@ class ConsumerA(JSONWebSocket):
             sensitive_data
         )
 
-class ConsumerB(JSONWebSocket):
+class ConsumerB(JSONConsumer):
     def on_connect(self):
         self.group_add('groupB')
 
@@ -121,9 +121,9 @@ You can create custom middlewares that will be run before the on_connect functio
 The code below will automatically gather the chat user name from url.
 
 ```python
-from easy_channels import SocketMiddleware
+from easy_channels import ConsumerMiddleware
 
-class UserGatherMiddleware(SocketMiddleware):
+class UserGatherMiddleware(ConsumerMiddleware):
 
     # Called before the consumer's 'on_connect()'
     def on_connect(self):
@@ -134,7 +134,7 @@ class UserGatherMiddleware(SocketMiddleware):
 To the middleware to work with the consumer we must pass it.
 
 ```python
-class ChatConsumer(JSONWebSocket):
+class ChatConsumer(JSONConsumer):
     middlewares = [UserGatherMiddleware]
 
     def on_connect(self):

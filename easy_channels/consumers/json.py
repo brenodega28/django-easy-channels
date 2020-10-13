@@ -5,7 +5,7 @@ from channels.db import database_sync_to_async
 from oauth2_provider.models import AccessToken
 
 
-class JSONWebSocket(AsyncWebsocketConsumer):
+class JSONConsumer(AsyncWebsocketConsumer):
     middlewares = []
 
     def __init__(self, *args, **kwargs):
