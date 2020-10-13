@@ -4,6 +4,12 @@ Simple framework for making socket consumers using Django Channels.
 
 It's made to work a little like SocketIO using events.
 
+## Installing
+
+```bash
+pip install django_easy_channels
+```
+
 ## Socket Example
 
 ### Backend
