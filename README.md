@@ -13,7 +13,7 @@ from django_easy_channels import JSONWebSocket
 
 
 class ChatConsumer(JSONWebSocket):
-    # function called when socket connected
+    # function called when socket connects
     def on_connect(self):
         # getting name from url
         self.name = self.scope['url_route']['kwargs']['name']
@@ -31,7 +31,7 @@ class ChatConsumer(JSONWebSocket):
             'from': self.name
         }
 
-        # sends this message to all connected sockets (not consumers)
+        # sends this message to all connected sockets in the 'chatroom' group (not consumers)
         await self.group_send(
             'chatroom', # group
             'message', # event name
@@ -58,15 +58,15 @@ socket.onmessage = function (message) {
 
 socket.send(
   JSON.stringify({
-    event: "broadcast_message", // Will call the on_broadcast on the server
-    message: "Hello World!", // Will be found in event['message']
+    event: "broadcast_message", // Will call the on_broadcast function in the server
+    message: "Hello World!", // Can be acessed in bachend using event['message']
   })
 );
 ```
 
 ## Adding to Route
 
-This JSONWebSocket can be added to Django Channels route in the same way of the origial consumers.
+This JSONWebSocket can be added to Django Channels route in the same way of the original consumers.
 
 ```python
 from django.urls import re_path
@@ -77,6 +77,37 @@ websocket_urlpatterns = [
     re_path(r'^ws/chat/(?P<name>\w+)/', consumers.ChatConsumer),
 ]
 
+```
+
+## Communicating Between Consumers
+
+Sometimes you want your consumers to talk with each other without sending data to the front end.
+
+For example, we can make a consumer A notify a consumer B that it needs to update its frontend information without this confidental data passing through consumer A.
+
+```python
+class ConsumerA(JSONWebSocket):
+    def on_connect(self):
+        self.group_add('groupA')
+
+    def on_notify(self):
+        sensitive_data = get_some_data()
+        self.group_send(
+            'groupA',
+            'notify',
+            sensitive_data
+        )
+
+class ConsumerB(JSONWebSocket):
+    def on_connect(self):
+        self.group_add('groupB')
+
+    def on_some_event(self):
+        # will call on_notify in all consumers in groupA
+        self.group_call_event(
+            'groupA',
+            'notify'
+        )
 ```
 
 ## Middleware Example
@@ -103,35 +134,6 @@ class ChatConsumer(JSONWebSocket):
     middlewares = [UserGatherMiddleware]
 
     def on_connect(self):
+        print(self.name) # Will print the user name
     ...
-```
-
-## Communicating Between Consumers
-
-Sometime you want your consumers to talk with each other without sending data to the front end.
-
-For example, we can make a consumer A notify a consumer B that it needs to update its frontend information without this confidental data passing through consumer A.
-
-```python
-class ConsumerA(JSONWebSocket):
-    def on_connect(self):
-        self.group_add('groupA')
-
-    def on_notify(self):
-        self.group_send(
-            'groupA',
-            'notify',
-            'Notification!'
-        )
-
-class ConsumerB(JSONWebSocket):
-    def on_connect(self):
-        self.group_add('groupB')
-
-    def on_some_event(self):
-        # will call on_notify in all consumers in groupA
-        self.group_call_event(
-            'groupA',
-            'notify'
-        )
 ```
