@@ -1,8 +1,6 @@
-# Django Easy Channels
+# Easy Channels
 
-Simple framework for making socket consumers using Django Channels.
-
-It's made to work a little like SocketIO using events.
+Lightweight framework for quickly making socket consumers using Django and DjangoChannels.
 
 ## Installing
 
