@@ -1,7 +1,5 @@
 # Easy Channels
 
-##### Made with Django v2.2.15 and Django Channels v2.3.0
-
 Lightweight framework for quickly making socket consumers using Django and DjangoChannels.
 
 ## Installing
